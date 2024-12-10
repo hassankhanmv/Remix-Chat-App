@@ -29,8 +29,9 @@ cd ai-chat-application
 ```
 
 ### 2. Install Dependencies
- 
+```bash
 npm install
+```
 
 ### 3. Environment Setup
 Create a .env file in the root directory and add the following environment variables:
@@ -46,4 +47,4 @@ Run the application locally:
 npm run dev
 ```
 
-The application will be accessible at *http://localhost:3000*
+The application will be accessible at *http://localhost:5173*
