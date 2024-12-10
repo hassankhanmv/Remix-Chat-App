@@ -26,6 +26,7 @@ Follow these steps to set up the project on your local machine:
 ```bash  
 git clone https://github.com/your-username/ai-chat-application.git  
 cd ai-chat-application  
+```
 
 ### 2. Install Dependencies
  
@@ -37,10 +38,12 @@ Create a .env file in the root directory and add the following environment varia
 OPENAI_API_KEY=your_openai_api_key  
 DATABASE_URL=your_database_connection_string  
 SESSION_SECRET=your_session_secret  
+```
 
 ### 4. Start the Development Server
 Run the application locally:
 ```bash
-npm run dev  
+npm run dev
+```
 
 The application will be accessible at *http://localhost:3000*
