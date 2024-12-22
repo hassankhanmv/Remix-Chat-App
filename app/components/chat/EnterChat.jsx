@@ -13,14 +13,15 @@ import {
   FormItem,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
+import { Card, CardFooter } from "../ui/card";
 
 const formSchema = z.object({
-  prompt: z.string().min(5, {
-    message: "Prompt must be at least 5 characters.",
+  prompt: z.string().min(1, {
+    message: "Please enter a message.",
   }),
 });
 
-export function EnterChat({ setAIResponse }) {
+export function EnterChat({ onSubmit, isLoading }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -28,59 +29,54 @@ export function EnterChat({ setAIResponse }) {
     },
   });
 
-  async function onSubmit(values) {
-    console.log("Prompt Submitted:", values.prompt);
-
-    try {
-      const response = await fetch("/api/groq-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: values.prompt }),
-      });
-
-      const data = await response.json();
-      console.log(data, "response");
-
-      // Set AI Response
-      setAIResponse(data.response);
-    } catch (error) {
-      console.error("Error:", error);
-      setAIResponse("Error: Unable to fetch response");
-    }
-  }
+  const handleSubmit = async (values) => {
+    await onSubmit(values);
+    form.reset();
+  };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex flex-row  justify-center gap-4">
-          <div className="flex flex-row items-center justify-between gap-4 bg-gray-800 p-2 rounded-3xl w-full">
-            <FormField
-              control={form.control}
-              name="prompt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Type your prompt here..."
-                      className="text-lg border-0 border-none outline-none focus:outline-none active:outline-none bg-transparent focus-visible:ring-0"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <Button
-              type="submit"
-              variant={"default"}
-              className="rounded-full"
-              size="icon"
-            >
-              <Send className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </form>
-    </Form>
+    <Card className="border-0 shadow-none">
+      <CardFooter className="p-0">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="w-full">
+            <div className="flex items-center gap-2">
+              <FormField
+                control={form.control}
+                name="prompt"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input
+                        placeholder="Type your message..."
+                        className="h-12 rounded-full bg-muted px-4"
+                        {...field}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            form.handleSubmit(handleSubmit)();
+                          }
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                size="icon"
+                className="h-12 w-12 rounded-full"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="animate-spin">⏳</span>
+                ) : (
+                  <Send className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardFooter>
+    </Card>
   );
 }
